@@ -22,7 +22,11 @@ class CategoryController extends Controller
 
         $category = Category::create($validatedData);
 
-        return redirect()->route('categories.index');
+        session()->flash('createdSuccess', [
+            'message' => 'Category created!',
+        ]);
+
+        return redirect()->route('category.index');
     }
 
     public function create()
@@ -49,8 +53,8 @@ class CategoryController extends Controller
 
         $category = Category::find($id);
         $oldName = $category->name; //para manipulação da mensagem de sucesso
+        
         $category->update($validatedData);
-
         $newName = $category->name; //para manipulação da mensagem de sucesso
 
         // Armazenar dados na sessão
@@ -60,7 +64,7 @@ class CategoryController extends Controller
             'newName' => $newName,
         ]);
 
-        return redirect()->route('categories.index');
+        return redirect()->route('category.index');
     }
 
     public function destroy($id)
@@ -75,9 +79,9 @@ class CategoryController extends Controller
                 'message' => 'Category deleted!',
             ]);
 
-            return redirect()->route('categories.index');
+            return redirect()->route('category.index');
         }
 
-        return redirect()->route('categories.index')->with('error', 'Category not found');
+        return redirect()->route('category.index')->with('error', 'Category not found');
     }
 }

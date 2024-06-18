@@ -117,17 +117,17 @@
                                 <li>
                                     <a href="#"
                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600
-                                   dark:hover:text-white">Register Article</a>
+                                   dark:hover:text-white">Article</a>
                                 </li>
                                 <li>
                                     <a href="{{ route('category.create') }}"
                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600
-                                   dark:hover:text-white">Register Category</a>
+                                   dark:hover:text-white">Category</a>
                                 </li>
                                 <li>
-                                    <a href="#"
+                                    <a href="{{ route('tag.create') }}"
                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600
-                                   dark:hover:text-white">Register Tag</a>
+                                   dark:hover:text-white">Tag</a>
                                 </li>
                             </ul>
                         </div>
@@ -156,12 +156,12 @@
                dark:hover:text-white">Articles</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('categories.index') }}"
+                                    <a href="{{ route('category.index') }}"
                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600
                dark:hover:text-white">Categories</a>
                                 </li>
                                 <li>
-                                    <a href="#"
+                                    <a href="{{ route('tag.index') }}"
                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600
                dark:hover:text-white">Tags</a>
                                 </li>

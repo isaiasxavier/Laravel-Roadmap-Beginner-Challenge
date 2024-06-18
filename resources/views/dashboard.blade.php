@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <a href="{{ route('category.create') }}" class="btn mr-4">Register Category</a>
-                    <a href="{{ route('categories.index') }}" class="btn">List Category</a>
+                    <a href="{{ route('category.index') }}" class="btn">List Category</a>
                 </div>
             </div>
         </div>
