@@ -9,6 +9,6 @@ class Article extends Component
 {
     public function render(): View
     {
-        return view('components.article');
+        return view('components.homepage');
     }
 }

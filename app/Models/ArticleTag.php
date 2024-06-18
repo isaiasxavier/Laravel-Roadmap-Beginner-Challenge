@@ -10,13 +10,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ArticleTag extends Model
 {
     use HasFactory, SoftDeletes;
+    
+    protected $table = 'article_tags';
 
     protected $fillable = [
         'article_id',
         'tag_id',
     ];
 
-    public function article(): BelongsTo
+    /*public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
     }
@@ -24,5 +26,5 @@ class ArticleTag extends Model
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
-    }
+    }*/
 }

@@ -4,7 +4,7 @@
     <main class="mt-6">
         <div class="grid grid-cols-2 gap-4 mx-auto w-full sm:w-4/5 md:w-3/5 lg:w-1/2">
             @foreach ($articles as $article)
-                @include('components.article', ['article' => $article])
+                @include('articles.article-homepage', ['article' => $article])
             @endforeach
         </div>
 

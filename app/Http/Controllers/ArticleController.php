@@ -10,6 +10,11 @@ class ArticleController extends Controller
 {
     public function index()
     {
+    
+    }
+    
+    public function homepage()
+    {
         $articles = Article::paginate(2);
         
         return view('homepage', compact('articles'));

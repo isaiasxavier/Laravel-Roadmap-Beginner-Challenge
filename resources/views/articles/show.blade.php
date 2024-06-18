@@ -9,10 +9,19 @@
                         <img src="{{ asset($article->image) }}" alt="{{ $article->title }}" class="w-full h-96
                         object-cover rounded">
                     </div>
-                     <h1 class="text-xl font-medium">{{ $article->title }}</h1>
+                    <h1 class="text-xl font-medium">{{ $article->title }}</h1>
                     <p class="mt-2 text-gray-600">{{ $article->full_text }}</p>
+
                     <div class="flex justify-between items-center mt-4">
                         <div>
+
+                            <span class="text-sm text-gray-600">Category: {{ $article->category->name }} </span><br><br>
+                            <span class="text-sm text-gray-600">Number of Tags: {{ $article->tags()->count()
+                            }}</span><br>
+                            <span class="text-sm text-gray-600">Name Tags:
+                                {{ implode(', ', $article->tags()->pluck('name')->toArray()) }}
+                            </span><br><br>
+                            <span class="text-sm text-gray-600">Author: {{ $article->user->name }} </span><br>
                             <span class="text-sm text-gray-600">Created at: {{ $article->created_at->format('d/m/Y')
                             }}</span><br>
                             <span class="text-sm text-gray-600">Updated at: {{ $article->updated_at->format('d/m/Y')
