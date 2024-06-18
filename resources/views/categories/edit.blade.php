@@ -19,4 +19,5 @@
                     dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Update</button>
     </form>
+
 @endsection

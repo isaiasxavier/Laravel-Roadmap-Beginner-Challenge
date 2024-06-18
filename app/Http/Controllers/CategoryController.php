@@ -54,7 +54,7 @@ class CategoryController extends Controller
         $newName = $category->name; //para manipulação da mensagem de sucesso
 
         // Armazenar dados na sessão
-        session()->flash('success', [
+        session()->flash('updatedSuccess', [
             'message' => 'Category updated!',
             'oldName' => $oldName,
             'newName' => $newName,
@@ -65,5 +65,19 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
+        $category = Category::find($id);
+
+        if ($category) {
+            $category->delete();
+
+            // Armazenar dados na sessão
+            session()->flash('deletedSuccess', [
+                'message' => 'Category deleted!',
+            ]);
+
+            return redirect()->route('categories.index');
+        }
+
+        return redirect()->route('categories.index')->with('error', 'Category not found');
     }
 }

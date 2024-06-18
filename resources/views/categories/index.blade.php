@@ -4,7 +4,8 @@
 @section('content')
 
     <table class="m-3 divide-y divide-gray-200 w-1/2 mx-auto">
-        @if (session('success'))
+
+        @if (session('updatedSuccess'))
             <br><br>
             <div id="success-message" class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50
              dark:bg-gray-800
@@ -16,13 +17,33 @@
                 </svg>
                 <span class="sr-only">Info</span>
                 <div>
-                    <span class="font-medium">Success!</span> {{ session('success')['message'] }}
+                    <span class="font-medium">Success!</span> {{ session('updatedSuccess')['message'] }}
                     <br>
-                    <span>Old: {{ session('success')['oldName'] }}</span>
+                    <span>Old: {{ session('updatedSuccess')['oldName'] }}</span>
                     <br>
-                    <span>New: {{ session('success')['newName'] }}</span>
+                    <span>New: {{ session('updatedSuccess')['newName'] }}</span>
                 </div>
                 @endif
+
+                @if (session('deletedSuccess'))
+                    <br><br>
+                    <div id="delete-success-message" class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50
+     dark:bg-gray-800
+    dark:text-green-400 w-1/5 mx-auto"
+                         role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            <span class="font-medium">Success!</span> {{ session('deletedSuccess')['message'] }}
+                        </div>
+                    </div>
+                @endif
+
+
                 <caption class="px-6 py-3 text-left text-lg font-medium text-gray-500 uppercase tracking-wider">
                     Categories
                     List
@@ -57,11 +78,12 @@
                     focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto
                     px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</a>
                         </td>
-                    </tr>
+                    @include('categories.destroy', ['route' => route('categories.destroy', $category->id)])
                 @endforeach
                 </tbody>
             </div>
     </table>
+
     <div class="mt-6 flex justify-center w-full">
         <br><br>
         {{ $categories->links() }}
@@ -71,6 +93,17 @@
         window.onload = function () {
             setTimeout(function () {
                 var element = document.getElementById('success-message');
+                if (element) {
+                    element.style.display = 'none';
+                }
+            }, 5000); // 5000 milissegundos = 5 segundos
+        };
+    </script>
+
+    <script>
+        window.onload = function () {
+            setTimeout(function () {
+                var element = document.getElementById('delete-success-message');
                 if (element) {
                     element.style.display = 'none';
                 }
