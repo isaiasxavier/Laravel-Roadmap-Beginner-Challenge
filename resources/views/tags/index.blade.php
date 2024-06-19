@@ -89,7 +89,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                 @foreach($tags as $tag)
-                    <tr class="{{ $loop->iteration % 2 == 0 ? 'bg-gray-50' : 'bg-gray-200' }}">
+                    <tr class="{{ $loop->iteration % 2 === 0 ? 'bg-gray-50' : 'bg-gray-200' }}">
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $tag->name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $tag->created_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $tag->updated_at }}</td>
@@ -113,9 +113,9 @@
     <script>
         window.onload = function () {
             setTimeout(function () {
-                var updateElement = document.getElementById('update-success-message');
-                var deleteElement = document.getElementById('delete-success-message');
-                var createElement = document.getElementById('create-success-message');
+                const updateElement = document.getElementById('update-success-message');
+                const deleteElement = document.getElementById('delete-success-message');
+                const createElement = document.getElementById('create-success-message');
 
                 if (updateElement) {
                     updateElement.style.display = 'none';

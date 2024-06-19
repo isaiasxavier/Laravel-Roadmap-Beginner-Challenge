@@ -74,6 +74,9 @@
                         Name
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                        Tag
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
                         Created
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
@@ -91,6 +94,47 @@
                 @foreach($categories as $category)
                     <tr class="{{ $loop->iteration % 2 == 0 ? 'bg-gray-50' : 'bg-gray-200' }}">
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $category->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap w-1/3">
+                            @php
+                                //coleção vazia é criada
+                                $tags = collect();
+                                /* Seleciona/itera todos os Artigos relacionados a Categoria.
+                                 * $category→articles é uma relação definida no modelo Category
+                                */
+                                foreach($category->articles as $article) {
+                                    /* Itera sobre cada article_tag associado ao artigo atual.
+                                    * $article→article_tags é uma relação definida no modelo Article
+                                    * que retorna todos os article_tags associados ao artigo. */
+                                    foreach($article->article_tags as $article_tag) {
+                                        /* Aqui, verificamos se a tag associada ao article_tag atual não é nula.
+                                        * Se não for nula, o nome da tag é adicionado à coleção $tags.
+                                        * $article_tag→tag é uma relação definida no modelo ArticleTag que retorna
+                                        * a tag associada ao article_tag.
+                                        * —>name acessa o nome dessa tag.
+                                        * Isso evita o erro de tentar acessar a propriedade "name" em null quando a tag
+                                        * foi excluída, mas ainda está referenciada em article_tags. */
+                                        if ($article_tag->tag !== null) {
+                                            $tags->push($article_tag->tag->name);
+                                        }
+                                    }
+                                }
+                            @endphp
+
+                            {{--Este é um comando if do Blade que verifica se a coleção $tags está vazia.
+                            ->isEmpty() é um método das coleções do Laravel que retorna true se a coleção
+                            estiver vazia e false caso contrário.--}}
+                            @if($tags->isEmpty())
+                                No tags
+                                {{--Se a coleção $tags não estiver vazia, os nomes das tags são unidos em uma
+                                única string, separados por vírgulas. .toArray() é um método das coleções
+                                do Laravel que converte a coleção em um array. implode() é uma função PHP
+                                que une os elementos de um array em uma string, usando o delimitador fornecido
+                                (neste caso, uma vírgula seguida de um espaço).--}}
+                            @else
+                                {{ implode(', ', $tags->toArray()) }}
+                            @endif
+
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $category->created_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $category->updated_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">
@@ -114,9 +158,9 @@
     <script>
         window.onload = function () {
             setTimeout(function () {
-                var updateElement = document.getElementById('update-success-message');
-                var deleteElement = document.getElementById('delete-success-message');
-                var createElement = document.getElementById('create-success-message');
+                const updateElement = document.getElementById('update-success-message');
+                const deleteElement = document.getElementById('delete-success-message');
+                const createElement = document.getElementById('create-success-message');
 
                 if (updateElement) {
                     updateElement.style.display = 'none';

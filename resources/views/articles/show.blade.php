@@ -5,27 +5,35 @@
         <div class="max-w-md mx-auto bg-neutral-400 shadow-lg rounded-lg md:max-w-5xl">
             <div class="md:flex ">
                 <div class="w-full p-4 px-5 py-5">
-                    <div class="w-64 mx-auto">
+                    <div class="mx-auto">
                         <img src="{{ asset($article->image) }}" alt="{{ $article->title }}" class="w-full h-96
-                        object-cover rounded">
+                        object-cover rounded"><br>
                     </div>
-                    <h1 class="text-xl font-medium">{{ $article->title }}</h1>
-                    <p class="mt-2 text-gray-600">{{ $article->full_text }}</p>
+                    <h1 class="text-3xl font-bold mb-4">{{ $article->title }}</h1>
+                    <p class="text-lg text-gray-700 mb-4">{{ $article->full_text }}</p>
 
-                    <div class="flex justify-between items-center mt-4">
+                    <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
                         <div>
+                            <span><strong>Author:</strong> {{ $article->user->name }} </span><br>
+                            <span><strong>Created at:</strong> {{ $article->created_at->format('d/m/Y') }}</span><br>
+                            <span><strong>Updated at:</strong> {{ $article->updated_at->format('d/m/Y') }}</span>
+                        </div>
+                        <div>
+                            {{--Neste código, $article->category ? $article->category->name : 'No related category' é uma
+                            expressão condicional inline. Ela verifica se $article->category é verdadeiro
+                            (ou seja, não null). Se for verdadeiro, ela retorna $article->category->name. Se for falso
+                            (ou seja, null), ela retorna a string 'No related category'.--}}
+                            <span><strong>Category:</strong> {{ $article->category ? $article->category->name : 'No related category' }} </span><br>
 
-                            <span class="text-sm text-gray-600">Category: {{ $article->category->name }} </span><br><br>
-                            <span class="text-sm text-gray-600">Number of Tags: {{ $article->tags()->count()
-                            }}</span><br>
-                            <span class="text-sm text-gray-600">Name Tags:
-                                {{ implode(', ', $article->tags()->pluck('name')->toArray()) }}
-                            </span><br><br>
-                            <span class="text-sm text-gray-600">Author: {{ $article->user->name }} </span><br>
-                            <span class="text-sm text-gray-600">Created at: {{ $article->created_at->format('d/m/Y')
-                            }}</span><br>
-                            <span class="text-sm text-gray-600">Updated at: {{ $article->updated_at->format('d/m/Y')
-                            }}</span>
+                            @php
+                                // Pega todas as tags associadas ao artigo.
+                                $tagNames = $article->article_tags()->with('tag')->get()->pluck('tag.name')->filter()->toArray();
+                            @endphp
+                            <span><strong>Name Tags:</strong>
+                            {{-- Verifica se a coleção de nomes de tags está vazia. Se estiver vazia, exibe 'No Related Tags'.
+                            Caso contrário, junta todos os nomes das tags em uma única string, separados por vírgulas. --}}
+                                {{ empty($tagNames) ? 'No Related Tags' : implode(', ', $tagNames) }}
+                            </span><br>
                         </div>
                     </div>
                 </div>

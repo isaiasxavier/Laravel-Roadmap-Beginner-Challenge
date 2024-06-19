@@ -18,7 +18,7 @@ class ArticleTag extends Model
         'tag_id',
     ];
 
-    /*public function article(): BelongsTo
+    public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
     }
@@ -26,5 +26,5 @@ class ArticleTag extends Model
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
-    }*/
+    }
 }
