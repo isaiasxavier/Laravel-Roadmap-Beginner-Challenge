@@ -10,11 +10,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 
 
     <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
 
 
 </head>
@@ -48,11 +50,12 @@
                 <a href="https://github.com/isaiasxavier" class="hover:underline me-4 md:me-6">Personal Github</a>
             </li>
             <li>
-                <a href="https://github.com/isaiasxavier/bglvlch" class="hover:underline me-4 md:me-6">Project Github</a>
+                <a href="https://github.com/isaiasxavier/bglvlch" class="hover:underline me-4 md:me-6">Project
+                    Github</a>
             </li>
         </ul>
     </div>
 </footer>
-<script src="{{ asset('js/flowbite.min.js') }}"></script>
+{{--<script src="{{ asset('js/flowbite.min.js') }}"></script>--}}
 </body>
 </html>

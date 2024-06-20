@@ -44,7 +44,7 @@ class ArticleController extends Controller
         // Associe as tags ao artigo
         if (is_array($request->tag_id)) {
             foreach ($request->tag_id as $tag_id) {
-                ArticleTag::create([
+                $tags = ArticleTag::create([
                     'article_id' => $article->id,
                     'tag_id' => $tag_id,
                 ]);
@@ -55,8 +55,10 @@ class ArticleController extends Controller
             Log::error('tag_id is not an array or not sent in the request');
         }
         
+        
+        
         // Redirecione o usuário de volta para a página de criação de artigos com uma mensagem de sucesso
-        return redirect()->route('articles.index')->with('success', 'Article created successfully');
+        return redirect()->route('article.index')->with('success', 'Article created successfully');
     }
 
     public function create()
