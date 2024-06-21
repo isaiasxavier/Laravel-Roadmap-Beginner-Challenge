@@ -14,6 +14,7 @@
                     <a href="{{ route('tag.create') }}" class="btn mr-4">Register Tag</a>
                     <a href="{{ route('tag.index') }}" class="btn mr-4">List Tag</a>
                     <a href="{{ route('article.create') }}" class="btn mr-4">Register Article</a>
+                    <a href="{{ route('article.index') }}" class="btn mr-4">List Article</a>
                 </div>
             </div>
         </div>

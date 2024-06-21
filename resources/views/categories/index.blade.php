@@ -4,7 +4,41 @@
 @section('content')
 
     <table class="m-3 divide-y divide-gray-200 w-1/2 mx-auto">
-
+        @if (session('createdSuccess'))
+            <br><br>
+            <div id="create-success-message" class="flex items-center p-4 mb-4 text-sm text-green-800
+                    rounded-lg bg-green-50
+     dark:bg-gray-800
+    dark:text-green-400 w-1/5 mx-auto"
+                 role="alert">
+                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg"
+                     fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Info</span>
+                <div>
+                    <span class="font-medium">Success!</span> {{ session('createdSuccess')['message'] }}
+                </div>
+            </div>
+        @endif
+        @if (session('deletedSuccess'))
+            <br><br>
+            <div id="delete-success-message" class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50
+     dark:bg-gray-800
+    dark:text-green-400 w-1/5 mx-auto"
+                 role="alert">
+                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg"
+                     fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Info</span>
+                <div>
+                    <span class="font-medium">Success!</span> {{ session('deletedSuccess')['message'] }}
+                </div>
+            </div>
+        @endif
         @if (session('updatedSuccess'))
             <br><br>
             <div id="update-success-message" class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg
@@ -25,44 +59,6 @@
                     <span>New: {{ session('updatedSuccess')['newName'] }}</span>
                 </div>
                 @endif
-
-                @if (session('deletedSuccess'))
-                    <br><br>
-                    <div id="delete-success-message" class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50
-     dark:bg-gray-800
-    dark:text-green-400 w-1/5 mx-auto"
-                         role="alert">
-                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
-                             xmlns="http://www.w3.org/2000/svg"
-                             fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                        </svg>
-                        <span class="sr-only">Info</span>
-                        <div>
-                            <span class="font-medium">Success!</span> {{ session('deletedSuccess')['message'] }}
-                        </div>
-                    </div>
-                @endif
-
-                @if (session('createdSuccess'))
-                    <br><br>
-                    <div id="create-success-message" class="flex items-center p-4 mb-4 text-sm text-green-800
-                    rounded-lg bg-green-50
-     dark:bg-gray-800
-    dark:text-green-400 w-1/5 mx-auto"
-                         role="alert">
-                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
-                             xmlns="http://www.w3.org/2000/svg"
-                             fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                        </svg>
-                        <span class="sr-only">Info</span>
-                        <div>
-                            <span class="font-medium">Success!</span> {{ session('createdSuccess')['message'] }}
-                        </div>
-                    </div>
-                @endif
-
 
                 <caption class="px-6 py-3 text-left text-lg font-medium text-gray-500 uppercase tracking-wider">
                     Categories

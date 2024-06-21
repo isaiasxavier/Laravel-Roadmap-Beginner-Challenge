@@ -17,7 +17,12 @@ use RuntimeException;
 
 class ArticleController extends Controller
 {
-    public function index(): void {}
+    public function index()
+    {
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
+
+        return view('articles.index', compact('articles'));
+    }
 
     public function homepage()
     {
@@ -65,6 +70,10 @@ class ArticleController extends Controller
             // You can log an error message or throw an exception
             Log::error('tag_id is not an array or not sent in the request');
         }
+
+        session()->flash('createdSuccess', [
+            'message' => 'Article created!',
+        ]);
 
         // Redirecione o usuário de volta para a página de criação de artigos com uma mensagem de sucesso
         return redirect()->route('article.index')->with('success', 'Article created successfully');
@@ -121,7 +130,7 @@ class ArticleController extends Controller
         }
         // Salva a imagem redimensionada
         $image->save($resizedImagePath);
-        
+
         // Retorna o caminho da imagem redimensionada
         return $resizedImagePath;
     }
@@ -129,9 +138,35 @@ class ArticleController extends Controller
     public function create()
     {
         $categories = Category::all(); //usado para popular o select Category
-        $tags = Tag::all();
-        $articles = Article::all();
+        $tags = Tag::all(); //usado para popular o Select Tag
 
         return view('articles.create', compact('categories', 'tags'));
+    }
+    
+    public function destroy($id): RedirectResponse
+    {
+        $article = Article::find($id);
+
+        if ($article) {
+            $article->delete();
+
+            // Armazenar dados na sessão
+            session()->flash('deletedSuccess', [
+                'message' => 'Article deleted!',
+            ]);
+
+            return redirect()->route('article.index');
+        }
+
+        return redirect()->route('article.index')->with('error', 'Article not found');
+    }
+    
+    public function edit($id)
+    {
+        $article = Article::find($id);
+        $categories = Category::all(); //usado para popular o select Category
+        $tags = Tag::all(); //usado para popular o Select Tag
+        
+        return view('articles.edit', compact('article', 'categories', 'tags'));
     }
 }

@@ -59,15 +59,21 @@
                     <span>New: {{ session('updatedSuccess')['newName'] }}</span>
                 </div>
                 @endif
-                
+
                 <caption class="px-6 py-3 text-left text-lg font-medium text-gray-500 uppercase tracking-wider">
-                    Tags
+                    Article
                     List
                 </caption>
                 <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
-                        Name
+                        Title
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                        Tag
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                        Category
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
                         Created
@@ -84,18 +90,56 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                @foreach($tags as $tag)
-                    <tr class="{{ $loop->iteration % 2 === 0 ? 'bg-gray-50' : 'bg-gray-200' }}">
-                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $tag->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $tag->created_at }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $tag->updated_at }}</td>
+                @foreach($articles as $article)
+                    <tr class="{{ $loop->iteration % 2 == 0 ? 'bg-gray-50' : 'bg-gray-200' }}">
+                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $article->title }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">
-                            <a href="{{ route('tag.edit', $tag->id) }}" class="text-white bg-blue-700
+                            @php
+                                //coleção vazia é criada
+                                $tags = collect();
+
+                                /* Itera sobre cada article_tag associado ao artigo atual.
+                                 * $article→article_tags é uma relação definida no modelo Article
+                                 * que retorna todos os article_tags associados ao artigo. */
+                                foreach($article->article_tags as $article_tag) {
+                                        /* Aqui, verificamos se a tag associada ao article_tag atual não é nula.
+                                        * Se não for nula, o nome da tag é adicionado à coleção $tags.
+                                        * $article_tag→tag é uma relação definida no modelo ArticleTag que retorna
+                                        * a tag associada ao article_tag.
+                                        * —>name acessa o nome dessa tag.
+                                        * Isso evita o erro de tentar acessar a propriedade "name" em null quando a tag
+                                        * foi excluída, mas ainda está referenciada em article_tags. */
+                                        if ($article_tag->tag !== null) {
+                                            $tags->push($article_tag->tag->name);
+                                        }
+                                }
+                            @endphp
+
+                            {{--Este é um comando if do Blade que verifica se a coleção $tags está vazia.
+                            ->isEmpty() é um método das coleções do Laravel que retorna true se a coleção
+                            estiver vazia e false caso contrário.--}}
+                            @if($tags->isEmpty())
+                                No tags
+                                {{--Se a coleção $tags não estiver vazia, os nomes das tags são unidos em uma
+                                única string, separados por vírgulas. .toArray() é um método das coleções
+                                do Laravel que converte a coleção em um array. implode() é uma função PHP
+                                que une os elementos de um array em uma string, usando o delimitador fornecido
+                                (neste caso, uma vírgula seguida de um espaço).--}}
+                            @else
+                                {{ implode(', ', $tags->toArray()) }}
+                            @endif
+
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $article->category->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $article->created_at }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $article->updated_at }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap w-1/3">
+                            <a href="{{ route('article.edit', $article->id) }}" class="text-white bg-blue-700
                             hover:bg-blue-800
                     focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto
                     px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</a>
                         </td>
-                    @include('tags.destroy', ['route' => route('tag.destroy', $tag->id)])
+                    @include('articles.destroy', ['route' => route('article.destroy', $article->id)])
                 @endforeach
                 </tbody>
             </div>
@@ -103,8 +147,9 @@
 
     <div class="mt-6 flex justify-center w-full">
         <br><br>
-        {{ $tags->links() }}
+        {{ $articles->links() }}
     </div>
+
 
     <script>
         window.onload = function () {
