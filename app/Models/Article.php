@@ -18,6 +18,7 @@ class Article extends Model
         'title',
         'full_text',
         'image',
+        'resized_image',
         
     ];
 

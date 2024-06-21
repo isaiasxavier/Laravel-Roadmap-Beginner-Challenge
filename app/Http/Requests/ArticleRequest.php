@@ -17,6 +17,7 @@ class ArticleRequest extends FormRequest
             'tag_id' => ['required', 'array'],
             'tag_id.*' => ['exists:tags,id'],*/
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'resized_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 

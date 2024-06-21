@@ -6,7 +6,7 @@
             <div class="md:flex ">
                 <div class="w-full p-4 px-5 py-5">
                     <div class="mx-auto">
-                        <img src="{{ asset($article->image) }}" alt="{{ $article->title }}" class="w-full h-96
+                        <img src="{{ asset($article->resized_image) }}" alt="{{ $article->title }}" class="w-full h-96
                         object-cover rounded"><br>
                     </div>
                     <h1 class="text-3xl font-bold mb-4">{{ $article->title }}</h1>
