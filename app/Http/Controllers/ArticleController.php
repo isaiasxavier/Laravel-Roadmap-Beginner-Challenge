@@ -12,9 +12,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use RuntimeException;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Imagick\Driver;
+use RuntimeException;
 
 class ArticleController extends Controller
 {
@@ -31,35 +30,15 @@ class ArticleController extends Controller
     {
         // Resize the article image to 800x600
         /*$article->image = $this->resizeImage(public_path($article->image), 800, 600);*/
-        
+
         return view('articles.show', compact('article'));
     }
-    
-    /**
-     * @throws Exception if $file is not an instance of UploadedFile
-     */
-    private function handleImageUpload(array|UploadedFile|null $file): String
-    {
-        if($file instanceof UploadedFile){
-            // Gere um novo nome de arquivo baseado na hora atual e na extensão do arquivo
-            $imageName = Str::random(10) . '.' . $file->extension();
-            
-            // Mova o arquivo para a pasta public/images/articles-resized
-            $file->move(public_path('storage/images/articles-resized'), $imageName);
-            
-            // Retorne o caminho do arquivo
-            return 'storage/images/articles-resized/' . $imageName;
-        }
-        
-        // Se o arquivo não for uma instância de UploadedFile, lance uma exceção
-        throw new RuntimeException('The file is not a valid instance of UploadedFile');
-    }
-    
+
     public function store(ArticleRequest $request): RedirectResponse
     {
         // Capture os dados do formulário
         $data = $request->all();
-        
+
         // Adicione o user_id ao array de dados
         $data['user_id'] = auth()->id();
 
@@ -70,7 +49,6 @@ class ArticleController extends Controller
         if ($request->hasFile('image')) {
             $data['image'] = $this->handleImageUpload($request->file('image'));
         }
-        
 
         // Crie um novo artigo
         $article = Article::create($data);
@@ -92,7 +70,58 @@ class ArticleController extends Controller
         // Redirecione o usuário de volta para a página de criação de artigos com uma mensagem de sucesso
         return redirect()->route('article.index')->with('success', 'Article created successfully');
     }
-    
+
+    /**
+     * @throws Exception if $file is not an instance of UploadedFile
+     */
+    private function handleImageUpload(array|UploadedFile|null $file): string
+    {
+        if ($file instanceof UploadedFile) {
+            // Gere um novo nome de arquivo baseado na hora atual e na extensão do arquivo
+            $imageName = Str::random(10).'.'.$file->extension();
+
+            // Mova o arquivo para a pasta public/images/articles-resized
+            $file->move(public_path('storage/images/articles'), $imageName);
+
+            // Caminho completo da imagem
+            $imagePath = public_path('storage/images/articles/'.$imageName);
+
+            // Redimensiona a imagem
+            $this->resizeImage($imagePath, 984, 384);
+
+            // Retorne o caminho do arquivo
+            return 'storage/images/articles-resized/'.pathinfo($imageName, PATHINFO_FILENAME).'-resized.'.pathinfo($imageName, PATHINFO_EXTENSION);
+        }
+
+        // Se o arquivo não for uma instância de UploadedFile, lance uma exceção
+        throw new RuntimeException('The file is not a valid instance of UploadedFile');
+    }
+
+    private function resizeImage(string $imagePath, int $width, int $height): void
+    {
+        // Abre a imagem
+        $image = ImageManager::imagick()->read($imagePath);
+
+        // Redimensiona a imagem
+        $image->resize($width, $height);
+
+        // Define o novo caminho da imagem com o sufixo -resized
+        $resizedImagePath = str_replace('storage/images/articles', 'storage/images/articles-resized', $imagePath);
+        // Define o novo caminho da imagem com o sufixo -resized e a pasta articles-resized
+        $resizedImagePath = pathinfo($resizedImagePath, PATHINFO_DIRNAME).'/'.
+        pathinfo($resizedImagePath, PATHINFO_FILENAME).'-resized.'.pathinfo($resizedImagePath, PATHINFO_EXTENSION);
+
+        // Verifica se o diretório existe, se não, cria o diretório
+        $resizedImageDir = pathinfo($resizedImagePath, PATHINFO_DIRNAME);
+        if (! file_exists($resizedImageDir)) {
+            if (! mkdir($resizedImageDir, 0777, true) && ! is_dir($resizedImageDir)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $resizedImageDir));
+            }
+        }
+        // Salva a imagem redimensionada
+        $image->save($resizedImagePath);
+    }
+
     public function create()
     {
         $categories = Category::all(); //usado para popular o select Category
@@ -100,6 +129,4 @@ class ArticleController extends Controller
 
         return view('articles.create', compact('categories', 'tags'));
     }
-
-   
 }
