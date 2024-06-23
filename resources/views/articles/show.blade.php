@@ -14,7 +14,7 @@
 
                     <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
                         <div>
-                            <span><strong>Author:</strong> {{ $article->user->name }} </span><br>
+                            <span><strong>Author:</strong>     {{ $article->user->name }} </span><br>
                             <span><strong>Created at:</strong> {{ $article->created_at->format('d/m/Y') }}</span><br>
                             <span><strong>Updated at:</strong> {{ $article->updated_at->format('d/m/Y') }}</span>
                         </div>
@@ -25,7 +25,6 @@
                             (ou seja, null), ela retorna a string 'No related category'.--}}
                             <span><strong>Category:</strong> {{ $article->category->name ?? 'No Related category' }}
                             </span><br>
-
                             @php
                                 // Pega todas as tags associadas ao artigo.
                                 $tagNames = $article->article_tags()->with('tag')->get()->pluck('tag.name')->filter()->toArray();
@@ -36,6 +35,19 @@
                                 {{ empty($tagNames) ? 'No Related Tags' : implode(', ', $tagNames) }}
                             </span><br>
                         </div>
+                        @auth()
+                        <div>
+                            <a href="{{ route('article.edit', ['id' => $article->id]) }}" class="btn mr-4
+                            bg-green-500 text-white px-4 py-2 rounded block mb-2">Edit</a>
+
+                            <form action="{{ route('article.destroy', ['id' => $article->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn mr-4 bg-red-500 text-white px-4 py-2 rounded
+                                block">Delete</button>
+                            </form>
+                        </div>
+                        @endauth
                     </div>
                 </div>
             </div>
