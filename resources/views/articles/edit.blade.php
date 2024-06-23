@@ -27,10 +27,23 @@
                             focus:ring-blue-500 focus:border-blue-500
                         block w-screen p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
                         dark:focus:ring-blue-500 dark:focus:border-blue-500 ">
+                        {{--@foreach($categories as $category): Este é um loop que percorre cada categoria na variável
+                        $categories. $categories é uma coleção de todas as categorias disponíveis que foram passadas
+                        do controlador para a view. Para cada categoria na coleção, o código dentro do loop @foreach
+                            será executado.
 
-                        <option value="{{ $article->category }}">Select</option>
+                        <option value="{{ $category->id }}">: Aqui estamos criando um elemento de opção para um
+                        campo de seleção. O valor da opção é o ID da categoria atual, que é único para cada categoria.
+
+                        {{ $article->category_id === $category->id ? 'selected' : '' }}: Esta é uma expressão
+                        condicional que verifica se a categoria atual está associada ao artigo que está sendo
+                        editado. Se a categoria estiver associada ao artigo, a string 'selected' é retornada
+                        e a opção será selecionada por padrão quando a página for carregada. Se a categoria
+                        não estiver associada ao artigo, uma string vazia é retornada e a opção não será
+                        selecionada.   --}}
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ $article->category_id === $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -50,8 +63,25 @@
                 <label for="text-input" class="block mb-2 text-sm font-medium text-gray-900
                 dark:text-black"><strong>Tag:</strong></label>
                 <select name="tag_id[]" class="form-control" multiple="multiple">
+                    {{--@foreach($tags as $tag): Este é um loop que percorre cada tag na variável $tags. $tags é uma
+                    coleção de todas as tags disponíveis que foram passadas do controlador para a view. Para cada tag
+                    na coleção, o código dentro do loop @foreach será executado.
+
+                    <option value="{{ $tag->id }}">: Aqui estamos criando um elemento de opção para um campo de seleção.
+                    O valor da opção é o ID da tag atual, que é único para cada tag.
+
+                    {{ $article->tags->contains($tag->id) ? 'selected' : '' }}: Esta é uma expressão condicional que
+                    verifica se a tag atual está associada ao artigo que está sendo editado.
+                    Se a tag estiver associada ao artigo, a string 'selected' é retornada e a opção será selecionada
+                    por padrão quando a página for carregada. Se a tag não estiver associada ao artigo, uma string vazia
+                    é retornada e a opção não será selecionada.
+
+                    {{ $tag->name }}: Aqui estamos exibindo o nome da tag atual como o texto da opção.--}}
                     @foreach($tags as $tag)
-                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                        <option value="{{ $tag->id }}"
+                                {{ $article->tags->contains($tag->id) ? 'selected' : '' }}>
+                            {{ $tag->name }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -78,6 +108,11 @@
             </button>
         </div>
     </form>
+
+
+    <script>
+
+    </script>
     <script>
         $(document).ready(function () {
             $('select').select2();

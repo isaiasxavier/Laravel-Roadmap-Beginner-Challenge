@@ -130,7 +130,9 @@
                             @endif
 
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $article->category->name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap w-1/3">
+                            {{ optional($article->category)->name ?? 'No Category' }}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $article->created_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $article->updated_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">

@@ -69,9 +69,9 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
                         Name
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                    {{--<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
                         Tag
-                    </th>
+                    </th>--}}
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
                         Created
                     </th>
@@ -90,7 +90,7 @@
                 @foreach($categories as $category)
                     <tr class="{{ $loop->iteration % 2 == 0 ? 'bg-gray-50' : 'bg-gray-200' }}">
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $category->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap w-1/3">
+                        {{--<td class="px-6 py-4 whitespace-nowrap w-1/3">
                             @php
                                 //coleção vazia é criada
                                 $tags = collect();
@@ -116,21 +116,21 @@
                                 }
                             @endphp
 
-                            {{--Este é um comando if do Blade que verifica se a coleção $tags está vazia.
+                            --}}{{--Este é um comando if do Blade que verifica se a coleção $tags está vazia.
                             ->isEmpty() é um método das coleções do Laravel que retorna true se a coleção
-                            estiver vazia e false caso contrário.--}}
+                            estiver vazia e false caso contrário.--}}{{--
                             @if($tags->isEmpty())
                                 No tags
-                                {{--Se a coleção $tags não estiver vazia, os nomes das tags são unidos em uma
+                                --}}{{--Se a coleção $tags não estiver vazia, os nomes das tags são unidos em uma
                                 única string, separados por vírgulas. .toArray() é um método das coleções
                                 do Laravel que converte a coleção em um array. implode() é uma função PHP
                                 que une os elementos de um array em uma string, usando o delimitador fornecido
-                                (neste caso, uma vírgula seguida de um espaço).--}}
+                                (neste caso, uma vírgula seguida de um espaço).--}}{{--
                             @else
                                 {{ implode(', ', $tags->toArray()) }}
                             @endif
 
-                        </td>
+                        </td>--}}
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $category->created_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">{{ $category->updated_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap w-1/3">

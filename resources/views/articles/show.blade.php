@@ -23,7 +23,8 @@
                             expressão condicional inline. Ela verifica se $article->category é verdadeiro
                             (ou seja, não null). Se for verdadeiro, ela retorna $article->category->name. Se for falso
                             (ou seja, null), ela retorna a string 'No related category'.--}}
-                            <span><strong>Category:</strong> {{ $article->category ? $article->category->name : 'No related category' }} </span><br>
+                            <span><strong>Category:</strong> {{ $article->category->name ?? 'No Related category' }}
+                            </span><br>
 
                             @php
                                 // Pega todas as tags associadas ao artigo.
