@@ -39,13 +39,15 @@ class ArticleController extends Controller
     public function store(ArticleRequest $request): RedirectResponse
     {
         // Capture os dados do formulário
-        $data = $request->all();
+        $validatedData = $request->validated();
 
         // Adicione o user_id ao array de dados
-        $data['user_id'] = auth()->id();
+        $data = array_merge($validatedData, ['user_id' => auth()->id()]);
 
-        // Adicione o category_id ao array de dados
-        $data['category_id'] = $request->category_id;
+        // Adicione o category_id ao array de dados se estiver presente na solicitação
+        if ($request->has('category_id')) {
+            $data['category_id'] = $request->category_id;
+        }
 
         // Verifique se o request tem uma imagem
         if ($request->hasFile('image')) {
@@ -95,7 +97,7 @@ class ArticleController extends Controller
             $originalImagePath = 'storage/images/articles/'.$imageName;
 
             // Redimensiona a imagem
-            $resizedImagePath = $this->resizeImage($originalImagePath, 984, 384);
+            $resizedImagePath = $this->resizeImage($originalImagePath);
 
             // Retorne o caminho do arquivo
             // Retorne os caminhos das imagens
@@ -109,13 +111,11 @@ class ArticleController extends Controller
         throw new RuntimeException('The file is not a valid instance of UploadedFile');
     }
 
-    private function resizeImage(string $imagePath, int $width, int $height): string
-    {
-        // Abre a imagem
-        $image = ImageManager::imagick()->read($imagePath);
+    private function resizeImage(string $imagePath): string // Abre a imagem
+    {$image = ImageManager::imagick()->read($imagePath);
 
         // Redimensiona a imagem
-        $image->resize($width, $height);
+        $image->resize(984, 384);
 
         // Define o novo caminho da imagem com o sufixo -resized
         $resizedImagePath = str_replace('storage/images/articles', 'storage/images/articles-resized', $imagePath);
@@ -138,11 +138,11 @@ class ArticleController extends Controller
     public function create()
     {
         $categories = Category::all(); //usado para popular o select Category
-        $tags = Tag::all(); //usado para popular o Select Tag
+        $tags = Tag::all();            //usado para popular o Select Tag
 
         return view('articles.create', compact('categories', 'tags'));
     }
-    
+
     public function destroy($id): RedirectResponse
     {
         $article = Article::find($id);
@@ -160,13 +160,114 @@ class ArticleController extends Controller
 
         return redirect()->route('article.index')->with('error', 'Article not found');
     }
-    
+
     public function edit($id)
     {
         $article = Article::find($id);
         $categories = Category::all(); //usado para popular o select Category
-        $tags = Tag::all(); //usado para popular o Select Tag
-        
+        $tags = Tag::all();            //usado para popular o Select Tag
+
         return view('articles.edit', compact('article', 'categories', 'tags'));
+    }
+
+    public function update(ArticleRequest $request, $id): RedirectResponse
+    {
+        $article = Article::find($id);
+
+        // Capture os dados do formulário
+        $validatedData = $request->validated();
+
+        // Adicione o user_id ao array de dados
+        $data = array_merge($validatedData, ['user_id' => auth()->id()]);
+
+        $oldValues = [
+            'title' => $article->title,
+            'full_text' => $article->full_text,
+            'category' => optional($article->category)->name,
+            'tags' => implode(', ', $article->tags->pluck('name')->toArray()),
+            'image' => basename($article->image),
+        ];
+
+        // Verifique se a imagem foi enviada e alterada
+        if ($request->hasFile('image')) {
+            // Manipula o upload da imagem
+            $imagePaths = $this->handleImageUpload($request->file('image'));
+            // Adicione os caminhos da imagem ao array de dados
+            $data['image'] = $imagePaths['original'];
+            $data['resized_image'] = $imagePaths['resized'];
+
+            // Adicione a imagem ao array de novos valores
+            $newValues['image'] = basename($data['image']);
+        } else {
+            // Se nenhuma imagem foi enviada, defina o novo valor da imagem como o valor antigo
+            $newValues['image'] = $oldValues['image'];
+        }
+
+        // Atualiza o artigo
+        $article->update($data);
+
+        /**
+         * O método sync é usado para sincronizar as relações de muitos para muitos em um modelo do Laravel.
+         * Ele aceita um array de IDs como argumento e sincroniza a tabela pivot para corresponder exatamente a esses IDs.
+         * Qualquer ID que não esteja no array fornecido será removido da tabela pivot através do →detach().
+         *
+         * @param  array  $ids  Um array de IDs para sincronizar com a tabela pivot.
+         * @return void
+         */
+        // Sincroniza as tags
+        if (is_array($request->tag_id)) {
+            $article->tags()->sync($request->tag_id);
+        } else {
+            $article->tags()->detach();
+        }
+
+        $newValues = [
+            'title' => $request->title,
+            'full_text' => $request->full_text,
+            'category' => Category::find($request->category_id)->name ?? null,
+            'tags' => implode(', ', Tag::whereIn('id', $request->tag_id ?? [])->pluck('name')->toArray()),
+            'image' => basename($data['image'] ?? ''),
+        ];
+
+        // Inicializa um array para armazenar as alterações
+        $changes = [];
+
+        // Verifique cada campo para ver se houve alguma alteração
+        foreach ($oldValues as $field => $oldValue) {
+            if ($oldValue !== $newValues[$field]) {
+                $changes[$field] = [
+                    'old' => $oldValue,
+                    'new' => $newValues[$field],
+                ];
+            }
+        }
+
+        // Se houve alguma alteração, armazene as alterações na sessão flash
+        if (! empty($changes)) {
+            session()->flash('updatedSuccess', [
+                'message' => 'Article updated!',
+                'changes' => $changes,
+            ]);
+        }
+
+        return redirect()->route('article.index');
+    }
+
+    public function removeImage($id): RedirectResponse
+    {
+        $article = Article::find($id);
+
+        if ($article && $article->image) {
+            // Remova a imagem do sistema de arquivos se necessário
+            // Storage::delete($article->image);
+
+            $article->image = null;
+            $article->resized_image = null;
+            $article->save();
+
+            return redirect()->route('article.edit', $article->id)->with('success', 'Image removed successfully');
+        }
+
+        return redirect()->route('article.edit', $article->id)->with('error', 'Image not found');
     }
 }

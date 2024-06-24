@@ -1,10 +1,23 @@
 <x-app-layout xmlns="http://www.w3.org/1999/html">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form class="max-w-md mx-auto" method="POST" action="{{ route('article.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="relative z-0 w-full mb-5 group">
             <br><br>
             Register Article
             <br><br><br>
+            <div>
+            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+            </div>
             <div class="mb-5">
                 <label for="base-input" class="block mb-2 text-sm font-medium text-gray-900
                 dark:text-black"><strong>Title:</strong></label>

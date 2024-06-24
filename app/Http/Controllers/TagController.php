@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
@@ -14,13 +15,13 @@ class TagController extends Controller
         return view('tags.index', compact('tags'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
         ]);
 
-        $tag = Tag::create($validatedData);
+        Tag::create($validatedData);
 
         session()->flash('createdSuccess', [
             'message' => 'Tag created!',
@@ -34,10 +35,6 @@ class TagController extends Controller
         return view('tags.create');
     }
 
-    public function show($id)
-    {
-    }
-
     public function edit($id)
     {
         $tag = Tag::find($id);
@@ -45,7 +42,7 @@ class TagController extends Controller
         return view('tags.edit', compact('tag'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
@@ -67,7 +64,7 @@ class TagController extends Controller
         return redirect()->route('tag.index');
     }
 
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         $tag = Tag::find($id);
 
@@ -78,11 +75,10 @@ class TagController extends Controller
             session()->flash('deletedSuccess', [
                 'message' => 'Tag deleted!',
             ]);
-            
+
             return redirect()->route('tag.index');
         }
-        
+
         return redirect()->route('tag.index')->with('error', 'Tag not found');
-        
     }
 }

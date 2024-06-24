@@ -15,13 +15,13 @@ class CategoryController extends Controller
         return view('categories.index', compact('categories'));
     }
 
-    public function store(Request $request)
-    : RedirectResponse{
+    public function store(Request $request): RedirectResponse
+    {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
         ]);
 
-        $category = Category::create($validatedData);
+        Category::create($validatedData);
 
         session()->flash('createdSuccess', [
             'message' => 'Category created!',
@@ -34,10 +34,6 @@ class CategoryController extends Controller
     {
         return view('categories.create');
     }
-    
-    public function show($id)
-    {
-    }
 
     public function edit($id)
     {
@@ -46,7 +42,7 @@ class CategoryController extends Controller
         return view('categories.edit', compact('category'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
@@ -54,7 +50,7 @@ class CategoryController extends Controller
 
         $category = Category::find($id);
         $oldName = $category->name; //para manipulação da mensagem de sucesso
-        
+
         $category->update($validatedData);
         $newName = $category->name; //para manipulação da mensagem de sucesso
 
@@ -68,7 +64,7 @@ class CategoryController extends Controller
         return redirect()->route('category.index');
     }
 
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         $category = Category::find($id);
 

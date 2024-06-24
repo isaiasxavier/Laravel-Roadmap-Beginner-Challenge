@@ -1,11 +1,37 @@
 <x-app-layout xmlns="http://www.w3.org/1999/html">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+        <br>
+        <div class="flex flex-col items-center justify-center">
+            @if($article->image)
+                <img src="{{ asset($article->image) }}" alt="Current Image" class="w-1/4 object-cover mb-4">
+                <form action="{{ route('article.removeImage', $article->id) }}" method="POST" class="inline-flex">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">Remove Image</button>
+                </form>
+            @endif
+        </div>
+
     <form class="max-w-md mx-auto" method="POST" action="{{ route('article.update', $article->id) }}"
           enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <div>
+            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+        </div>
         <div class="relative z-0 w-full mb-5 group">
             <br><br>
-            Edit Article
+            <div class="text-center mx-auto w-full">
+                <h1>Edit Article</h1>
+            </div>
             <br><br><br>
             <div class="mb-5">
                 <label for="base-input" class="block mb-2 text-sm font-medium text-gray-900
@@ -41,6 +67,7 @@
                         e a opção será selecionada por padrão quando a página for carregada. Se a categoria
                         não estiver associada ao artigo, uma string vazia é retornada e a opção não será
                         selecionada.   --}}
+                        <option value="">None</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ $article->category_id === $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}</option>
@@ -54,6 +81,7 @@
                     <input class="block w-full text-lg text-gray-900 border border-gray-300 rounded-bl-3xl cursor-pointer
                 bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600
                 dark:placeholder-gray-400" name="image" id="image" type="file">
+
                 </div>
             </div>
 
@@ -104,15 +132,10 @@
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300
                     font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600
                     dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Submit
+                Update
             </button>
         </div>
     </form>
-
-
-    <script>
-
-    </script>
     <script>
         $(document).ready(function () {
             $('select').select2();

@@ -18,6 +18,19 @@
                             <span><strong>Created at:</strong> {{ $article->created_at->format('d/m/Y') }}</span><br>
                             <span><strong>Updated at:</strong> {{ $article->updated_at->format('d/m/Y') }}</span>
                         </div>
+                        @auth()
+                            <div>
+                                <a href="{{ route('article.edit', ['id' => $article->id]) }}" class="btn mr-4
+                            bg-green-500 text-white px-4 py-2 rounded block mb-2">Edit</a>
+
+                                <form action="{{ route('article.destroy', ['id' => $article->id]) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn mr-4 bg-red-500 text-white px-4 py-2 rounded
+                                block">Delete</button>
+                                </form>
+                            </div>
+                        @endauth
                         <div>
                             {{--Neste código, $article->category ? $article->category->name : 'No related category' é uma
                             expressão condicional inline. Ela verifica se $article->category é verdadeiro
@@ -35,19 +48,6 @@
                                 {{ empty($tagNames) ? 'No Related Tags' : implode(', ', $tagNames) }}
                             </span><br>
                         </div>
-                        @auth()
-                        <div>
-                            <a href="{{ route('article.edit', ['id' => $article->id]) }}" class="btn mr-4
-                            bg-green-500 text-white px-4 py-2 rounded block mb-2">Edit</a>
-
-                            <form action="{{ route('article.destroy', ['id' => $article->id]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn mr-4 bg-red-500 text-white px-4 py-2 rounded
-                                block">Delete</button>
-                            </form>
-                        </div>
-                        @endauth
                     </div>
                 </div>
             </div>

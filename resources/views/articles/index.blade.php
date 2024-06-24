@@ -51,12 +51,15 @@
                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                 </svg>
                 <span class="sr-only">Info</span>
-                <div>
-                    <span class="font-medium">Success!</span> {{ session('updatedSuccess')['message'] }}
-                    <br>
-                    <span>Old: {{ session('updatedSuccess')['oldName'] }}</span>
-                    <br>
-                    <span>New: {{ session('updatedSuccess')['newName'] }}</span>
+                <div class="alert alert-success">
+                    {{ session('updatedSuccess')['message'] }}
+                    @foreach(session('updatedSuccess')['changes'] as $field => $change)
+                        <p>
+                            <strong><span style='color: dodgerblue;'>{{ ucfirst($field) }}</span>:</strong> changed from
+                            "<span style='color: red;'>{{
+                            $change['old'] }}</span>" to "<span style='color: yellow;'>{{ $change['new'] }}</span>"
+                        </p>
+                    @endforeach
                 </div>
                 @endif
 
@@ -171,7 +174,7 @@
                 if (createElement) {
                     createElement.style.display = 'none';
                 }
-            }, 5000); // 5000 milissegundos = 5 segundos
+            }, 10000); // 5000 milissegundos = 5 segundos
         };
     </script>
 

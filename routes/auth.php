@@ -19,6 +19,7 @@ Route::group(['prefix' => '/article', 'middleware' => 'auth:web'], function () {
     Route::post('/store', [ArticleController::class, 'store'])->name('article.store');
     Route::get('/index', [ArticleController::class, 'index'])->name('article.index');
     Route::get('/{id}/edit', [ArticleController::class, 'edit'])->name('article.edit');
+    Route::put('/{id}/removeImage', [ArticleController::class, 'removeImage'])->name('article.removeImage');
     Route::put('/{id}/update', [ArticleController::class, 'update'])->name('article.update');
     Route::delete('/{id}/destroy', [ArticleController::class, 'destroy'])->name('article.destroy');
 });
