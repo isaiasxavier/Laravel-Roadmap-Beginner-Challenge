@@ -172,14 +172,15 @@ class ArticleController extends Controller
 
     public function update(ArticleRequest $request, $id): RedirectResponse
     {
-        $article = Article::find($id);
+        $article = Article::findOrFail($id);
 
-        // Capture os dados do formulário
+        // Captura os dados do formulário
         $validatedData = $request->validated();
 
-        // Adicione o user_id ao array de dados
+        // Adiciona o user_id ao array de dados
         $data = array_merge($validatedData, ['user_id' => auth()->id()]);
-
+        
+        //array para manipulação da mensagem flash
         $oldValues = [
             'title' => $article->title,
             'full_text' => $article->full_text,
@@ -195,12 +196,10 @@ class ArticleController extends Controller
             // Adicione os caminhos da imagem ao array de dados
             $data['image'] = $imagePaths['original'];
             $data['resized_image'] = $imagePaths['resized'];
-
-            // Adicione a imagem ao array de novos valores
-            $newValues['image'] = basename($data['image']);
         } else {
-            // Se nenhuma imagem foi enviada, defina o novo valor da imagem como o valor antigo
-            $newValues['image'] = $oldValues['image'];
+            // Se a imagem não foi enviada, usa a imagem atual
+            $data['image'] = $article->image;
+            $data['resized_image'] = $article->resized_image;
         }
 
         // Atualiza o artigo
@@ -243,7 +242,7 @@ class ArticleController extends Controller
         }
 
         // Se houve alguma alteração, armazene as alterações na sessão flash
-        if (! empty($changes)) {
+        if (!empty($changes)) {
             session()->flash('updatedSuccess', [
                 'message' => 'Article updated!',
                 'changes' => $changes,
